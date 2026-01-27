@@ -1,17 +1,55 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class BallMovement : MonoBehaviour
 {
-    public float speed = 3f;
+    private float speed = 8f;
+    private Vector2 direction = Vector2.right;
+
     private Rigidbody2D rb;
 
-    void Start()
+    public float Speed
     {
-        rb = GetComponent<Rigidbody2D>();
-        rb.velocity = new Vector2(speed, speed);
+        get { return speed; }
+        set
+        {
+            if (value < 0f)
+                speed = 0f;
+            else
+                speed = value;
+        }
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
+    public Vector2 Direction
     {
+        get { return direction; }
+        set
+        {
+            if (value != Vector2.zero)
+                direction = value.normalized;
+        }
+    }
+
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        rb.gravityScale = 0f;
+
+        Direction = Vector2.right;
+        Speed = speed;
+    }
+
+    private void FixedUpdate()
+    {
+        rb.velocity = direction * speed;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+{
+    if (collision.gameObject.CompareTag("Paddle"))
+    {
+        Direction = new Vector2(-Direction.x, Direction.y);
     }
 }
+}
+
