@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class PaddleController : MonoBehaviour
+public abstract class PaddleController : MonoBehaviour
 {
     [SerializeField] protected float moveSpeed = 8f;
 
@@ -20,8 +20,5 @@ public class PaddleController : MonoBehaviour
         rb.velocity = new Vector2(0f, input * moveSpeed);
     }
 
-    protected virtual float GetMoveInput()
-    {
-        return 0f;
-    }
+    protected abstract float GetMoveInput();
 }

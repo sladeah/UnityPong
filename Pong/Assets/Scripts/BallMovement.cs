@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class BallMovement : MonoBehaviour
+public class BallMovement : MonoBehaviour, ICollidable
 {
     private float speed = 8f;
     private Vector2 direction = Vector2.right;
@@ -45,11 +45,16 @@ public class BallMovement : MonoBehaviour
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
-{
-    if (collision.gameObject.CompareTag("Paddle"))
     {
-        Direction = new Vector2(-Direction.x, Direction.y);
+        ICollidable collidable = collision.gameObject.GetComponent<ICollidable>();
+        if (collidable != null)
+        {
+            collidable.OnHit(collision);
+        }
+    }
+
+    public void OnHit(Collision2D collision)
+    {
+   
     }
 }
-}
-
