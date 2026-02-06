@@ -1,7 +1,8 @@
 using UnityEngine;
+using Unity.Netcode;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class BallMovement : MonoBehaviour, ICollidable
+public class BallMovement : NetworkBehaviour, ICollidable
 {
     private float speed = 8f;
     private Vector2 direction = Vector2.right;
@@ -35,17 +36,28 @@ public class BallMovement : MonoBehaviour, ICollidable
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 0f;
 
-        Direction = Vector2.right;
-        Speed = speed;
+        if (IsServer)
+        {
+            Direction = Vector2.right;
+            Speed = speed;
+        }
+        else
+        {
+            rb.velocity = Vector2.zero;
+        }
     }
 
     private void FixedUpdate()
     {
+        if (!IsServer) return;
+
         rb.velocity = direction * speed;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (!IsServer) return;
+
         ICollidable collidable = collision.gameObject.GetComponent<ICollidable>();
         if (collidable != null)
         {
@@ -55,6 +67,5 @@ public class BallMovement : MonoBehaviour, ICollidable
 
     public void OnHit(Collision2D collision)
     {
-   
     }
 }

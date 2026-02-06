@@ -1,9 +1,12 @@
 using UnityEngine;
+using Unity.Netcode;
 
 public class RightPaddleController : PaddleController, ICollidable
 {
     protected override float GetMoveInput()
     {
+        if (!IsOwner) return 0f;
+
         return Input.GetAxis("RightPaddle");
     }
 
