@@ -1,5 +1,6 @@
-using Unity.Netcode;
+// PongNetworkSpawner.cs
 using UnityEngine;
+using Unity.Netcode;
 
 public class PongNetworkSpawner : NetworkBehaviour
 {
@@ -24,6 +25,7 @@ public class PongNetworkSpawner : NetworkBehaviour
 
         if (!IsServer) return;
 
+        // Spawn ONE ball on server. GameManager will freeze it until StartGame.
         if (ballInstance == null && ballPrefab != null)
         {
             ballInstance = Instantiate(ballPrefab, ballSpawnPos, Quaternion.identity);
@@ -43,6 +45,7 @@ public class PongNetworkSpawner : NetworkBehaviour
     {
         if (!NetworkManager.Singleton.IsServer) return;
 
+        // Host gets left paddle
         if (clientId == NetworkManager.ServerClientId && leftPaddleInstance == null)
         {
             leftPaddleInstance = Instantiate(leftPaddlePrefab, leftSpawnPos, Quaternion.identity);
@@ -50,6 +53,7 @@ public class PongNetworkSpawner : NetworkBehaviour
             return;
         }
 
+        // First remote client gets right paddle
         if (clientId != NetworkManager.ServerClientId && rightPaddleInstance == null)
         {
             rightPaddleInstance = Instantiate(rightPaddlePrefab, rightSpawnPos, Quaternion.identity);
